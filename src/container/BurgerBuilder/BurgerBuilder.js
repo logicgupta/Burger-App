@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Aux from '../../hoc/Aux'
+import Aux from '../../hoc/Aux/Aux'
 import Burger from '../../components/Burger/Burger'
 import BurgerControls from '../../components/Burger/BuildControls/BuildControls'
-import Model from '../../UI/Model/Model'
+import Model from '../../components/UI/Model/Model'
 import OrderSummary from '../../components/Burger/Ordersummary/OrderSummary'
 
 const INGREDIENT_PRICES = {
@@ -81,6 +81,13 @@ class BurgerBuilder extends Component{
     cancelPurchaseHandler=()=>{
         this.setState({purchasing:false});
     }
+    continuePurchaseHandler=()=>{
+        alert('Continue ......');
+    }
+
+    componentDidUpdate(){
+        console.log('[BurgerBuilder.js]   Updated');
+    }
 
 
     render(){
@@ -96,7 +103,11 @@ class BurgerBuilder extends Component{
                     <Model purchasing={this.state.purchasing}
                         close={this.cancelPurchaseHandler}
                     >
-                      <OrderSummary ingredients={ this.state.ingredients}/>
+                      <OrderSummary ingredients={ this.state.ingredients}
+                      cancelPurchase={this.cancelPurchaseHandler}
+                      sucessPurchase={this.continuePurchaseHandler}
+                      price={this.state.totalPrice}
+                      />
                     </Model>
                     <Burger ingredients={this.state.ingredients} />
                     <BurgerControls
