@@ -16,12 +16,7 @@ const INGREDIENT_PRICES = {
 class BurgerBuilder extends Component{
 
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0
-        },
+        ingredients:null,
         totalPrice: 4,
         purchasable: false,
         purchasing:false,
@@ -30,10 +25,10 @@ class BurgerBuilder extends Component{
 
         // Dynamic Ingredients API FIREBASE
     componentDidMount(){
-        // axiosInstance.get('')
-        // .then(res=>{
-
-        // });
+        axiosInstance.get('https://my-burger-react-app-b90db.firebaseio.com/ingredients.json')
+        .then(res=>{
+                this.setState({ingredients:res.data});
+        });
     }
 
     updatePurchaseState(ingredients){
@@ -132,14 +127,34 @@ class BurgerBuilder extends Component{
         }
         //{  salad:false , meat :false ...}
 
-       let ordummary=(<OrderSummary ingredients={ this.state.ingredients}
-            cancelPurchase={this.cancelPurchaseHandler}
-            sucessPurchase={this.continuePurchaseHandler}
-            price={this.state.totalPrice}
-            />);
+       let ordummary=null
             if(this.state.loading){
                 ordummary=<Spinner/>
             }
+            let burger=<Spinner/>
+
+            if(this.state.ingredients){
+                burger=(
+                    <Aux>
+                        <Burger ingredients={this.state.ingredients} />
+                        <BurgerControls
+                        ingredientsAdded={this.addIngredientsHandler}
+                        ingredientsRemoved={this.removeIngredientsHandler}
+                        disabled={disabledInfo}
+                        totalPrice={this.state.totalPrice}
+                        purchasable={this.state.purchasable}
+                        purchasing={this.puchaseHandler}
+                        />
+                    </Aux>
+
+            );
+            ordummary=(<OrderSummary ingredients={ this.state.ingredients}
+                cancelPurchase={this.cancelPurchaseHandler}
+                sucessPurchase={this.continuePurchaseHandler}
+                price={this.state.totalPrice}
+                />);
+            }
+
 
         return (
                 <Aux>
@@ -148,15 +163,7 @@ class BurgerBuilder extends Component{
                     >
                       {ordummary}
                     </Model>
-                    <Burger ingredients={this.state.ingredients} />
-                    <BurgerControls
-                    ingredientsAdded={this.addIngredientsHandler}
-                    ingredientsRemoved={this.removeIngredientsHandler}
-                    disabled={disabledInfo}
-                    totalPrice={this.state.totalPrice}
-                    purchasable={this.state.purchasable}
-                    purchasing={this.puchaseHandler}
-                    />
+                    {burger}
                 </Aux>
         )
     }
