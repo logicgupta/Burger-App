@@ -4,8 +4,8 @@ import Aux from '../../../hoc/Aux/Aux'
 import BackDrop from '../Backdrop/Backdrop'
 class Model extends Component{
 
-    shouldComponentUpdate(prevProps,nextSate){
-        return prevProps.purchasing!==this.props.purchasing;
+    shouldComponentUpdate(nextProps,nextSate){
+        return nextProps.purchasing!==this.props.purchasing  || nextProps.children!==this.props.children;
     }
     componentDidUpdate(){
         console.log('Model.js');
