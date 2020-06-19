@@ -28,6 +28,14 @@ class BurgerBuilder extends Component{
         loading:false
     }
 
+        // Dynamic Ingredients API FIREBASE
+    componentDidMount(){
+        // axiosInstance.get('')
+        // .then(res=>{
+
+        // });
+    }
+
     updatePurchaseState(ingredients){
 
         const sum=Object.keys(ingredients)
