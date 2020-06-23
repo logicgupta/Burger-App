@@ -1,10 +1,9 @@
 import React,{Component} from 'react'
-import Button from '../../../components/UI/Button/Button'
 import classes from '../ContactData/ContactData.module.css'
-import axiosInstance from '../../../order-axios'
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import Input from '../../../components/UI/Input/Input'
-
+import {connect} from 'react-redux';
+import * as orderActionTypes from '../../../store/actions/index'
 class ContactData extends Component{
 
     state={
@@ -56,36 +55,22 @@ class ContactData extends Component{
                     }
                 }
 
-        },
-
-        loading:false
+        }
     }
 
     onContactUsHandler=(event)=>{
             event.preventDefault();
-        this.setState({loading:true});
         const fromData={};
         for(let elementIndentifier in this.state.orderForm){
              fromData[elementIndentifier]=this.state.orderForm[elementIndentifier].value;
         }
 
         const order={
-            ingredients:this.props.ingredients,
+            ingredients:this.props.ings,
             price:this.props.price,
             orderData:fromData
         }
-
-        axiosInstance.post('/order.json',order)
-        .then((response)=>{
-
-        this.setState({loading:false}); 
-        this.props.history.push('/')
-            console.log(response);
-        },err=>{
-
-        this.setState({loading:false});
-        console.log(err)
-        });
+        this.props.onsubmitOrderData(order);
 
     }
 
@@ -128,7 +113,7 @@ class ContactData extends Component{
                             <button >CONTINUE</button>
                         </form>
                     </div>
-        if(this.state.loading){
+        if(this.props.loading){
             data=<Spinner/>
         }
 
@@ -141,4 +126,20 @@ class ContactData extends Component{
 
 
 }
-export default ContactData;
+
+const mapStateToProps=state=>{
+return{
+    ings:state.burgerBuilder.ingredients,
+    price:state.burgerBuilder.totalPrice,
+    loading:state.order.loading
+}
+}
+
+const mapDispatchToprops=dispatch=>{
+    return{
+        onPurchaseStart:()=>dispatch(orderActionTypes.purchaseStart),
+        onsubmitOrderData:(orderData)=>dispatch(orderActionTypes.setOrderFormData(orderData))
+    };
+}
+
+export default connect(mapStateToProps,mapDispatchToprops) (ContactData);
